@@ -5,11 +5,14 @@ import { RouterLink } from 'vue-router'
   <div class="return-link">
     <RouterLink :to="{name: 'home'}">{{ translateLanguage('back') }}</RouterLink>
   </div>
-  <div class="container">
+  <div class="container" v-if="article">
       <h2>{{ article.title }}</h2>
-      <span id="article-description">{{ article.description }}</span>
-      <span id="article-category">{{ translateLanguage('categories') }}: {{ article.category }}</span>
+      <span id="article-description" v-html="article.description"></span>
+      <span id="article-category">{{ translateLanguage('categories') }}: {{ article.category.join(', ') }}</span>
       <span id="article-link"><a :href="article.link" target="_blank">{{ translateLanguage('link') }}</a></span>
+  </div>
+  <div class="container" v-else>
+    <h2>{{ translateLanguage('not_found') }}</h2>
   </div>
 </template>
 
@@ -44,12 +47,14 @@ export default {
         'pl': {
           'categories': 'Kategorie',
           'link': 'Całość artykułu',
-          'back': 'Powrót do listy artykułów'
+          'back': 'Powrót do listy artykułów',
+          'not_found': 'Nie znaleziono wybranego artykułu'
         },
         'en': {
           'categories': 'Categories',
           'link': 'Full article',
-          'back': 'Return to article list'
+          'back': 'Return to article list',
+          'not_found': 'Article not found'
         }
       };
       return translations[this.language][element];

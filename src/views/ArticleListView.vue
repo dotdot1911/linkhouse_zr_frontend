@@ -17,7 +17,7 @@ import { RouterLink } from 'vue-router'
         <div v-for="article in filteredArticles" :key="article.guid" class="article-tile">
           <h3>{{ article.title }}</h3>
           <p>{{ translateLanguage('publication_date') }}: {{ article.pubDate }}</p>
-          <p>{{ translateLanguage('categories') }}: {{ article.category }}</p>
+          <p>{{ translateLanguage('categories') }}: {{ article.category.join(', ') }}</p>
           <RouterLink :to="{name: 'articleDetails', params: { guid: article.guid, language: this.language }}">{{ translateLanguage('details') }}</RouterLink>
         </div>
       </div>
