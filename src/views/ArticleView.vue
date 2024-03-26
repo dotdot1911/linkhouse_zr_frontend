@@ -11,12 +11,16 @@ import { RouterLink } from 'vue-router'
       <span id="article-category">{{ translateLanguage('categories') }}: {{ article.category.join(', ') }}</span>
       <span id="article-link"><a :href="article.link" target="_blank">{{ translateLanguage('link') }}</a></span>
   </div>
-  <div class="container" v-else>
+  <div class="container" v-if="!article && !isLoading">
     <h2>{{ translateLanguage('not_found') }}</h2>
+  </div>
+  <div class="loader-wrapper" v-if="isLoading">
+      <span class="loader"></span>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   props: {
     guid: String,
@@ -25,6 +29,7 @@ export default {
   data() {
     return {
       article: null,
+      isLoading: true
     };
   },
   async created() {
@@ -32,16 +37,17 @@ export default {
   },
   methods: {
     async fetchArticle() {
-    try {
-      const response = await fetch(`http://localhost:8000/article/${this.guid}?lang=${this.language}`);
-      if (!response.ok) {
-        throw new Error('Nie udało się pobrać artykułu');
-      }
-      const data = await response.json();
-      this.article = data;
-    } catch (error) {
-      console.error(error);
-    }},
+      await axios.get(`http://localhost:8000/article/${this.guid}?lang=${this.language}`)
+      .then((response)=>{
+        const data = response.data;
+        this.article = data;
+        this.isLoading = false;
+      })
+      .catch((error)=>{
+        console.warn(error)
+        this.isLoading = false;
+      });
+    },
     translateLanguage(element) {
       const translations = {
         'pl': {
@@ -64,6 +70,9 @@ export default {
 </script>
 
 <style scoped>
+.return-link {
+  min-width: 80vw;
+}
 .container {
   padding: 20px;
   border: 1px solid #ccc;
@@ -82,4 +91,33 @@ export default {
   margin-top: 10px;
   margin-bottom: 10px;
 }
+.loader-wrapper {
+  position: fixed;
+  width: 110px;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  bottom: calc(50vh - 55px);
+  left: calc(50vw - 55px);;
+}
+.loader {
+  width: 100px;
+  height: 100px;
+  border: 5px solid #FFF;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  }
+
+  @keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+} 
 </style>
