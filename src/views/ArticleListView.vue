@@ -1,3 +1,6 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+</script>
 <template>
   <div class="container">
     <button class="language-button" @click="toggleLanguage">{{ language }}</button>
@@ -23,7 +26,6 @@
 </template>
 
 <script>
-import { RouterLink } from 'vue-router'
 export default {
   data() {
     return {

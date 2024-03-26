@@ -1,3 +1,6 @@
+<script setup>
+import { RouterLink } from 'vue-router'
+</script>
 <template>
   <div class="return-link">
     <RouterLink :to="{name: 'home'}">{{ translateLanguage('back') }}</RouterLink>
@@ -11,7 +14,6 @@
 </template>
 
 <script>
-import { RouterLink } from 'vue-router'
 export default {
   props: {
     guid: String,
