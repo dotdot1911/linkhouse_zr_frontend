@@ -11,10 +11,11 @@
 
     <div class="article-tiles">
       <div class="tiles-container">
-        <div v-for="article in filteredArticles" :key="article.id" class="article-tile">
+        <div v-for="article in filteredArticles" :key="article.guid" class="article-tile">
           <h3>{{ article.title }}</h3>
           <p>{{ translateLanguage('publication_date') }}: {{ article.pubDate }}</p>
           <p>{{ translateLanguage('categories') }}: {{ article.category }}</p>
+          <RouterLink :to="{name: 'articleDetails', params: { guid: article.guid, language: this.language }}">{{ translateLanguage('details') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -22,6 +23,7 @@
 </template>
 
 <script>
+import { RouterLink } from 'vue-router'
 export default {
   data() {
     return {
@@ -31,15 +33,15 @@ export default {
       language: 'pl'
     };
   },
-  created() {
-    this.fetchArticles();
+  async created() {
+    await this.fetchArticles();
   },
   methods: {
     async fetchArticles() {
     try {
       const response = await fetch(`http://localhost:8000/articles?lang=${this.language}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch articles');
+        throw new Error('Nie udało się pobrać artykułów');
       }
       const data = await response.json();
       this.articles = data;
@@ -65,13 +67,15 @@ export default {
           'search_articles': 'Wyszukaj artykuły',
           'search_button': 'Szukaj',
           'categories': 'Kategorie',
-          'publication_date': 'Data publikacji'
+          'publication_date': 'Data publikacji',
+          'details': 'Szczegóły'
         },
         'en': {
           'search_articles': 'Search Articles',
           'search_button': 'Search',
           'categories': 'Categories',
-          'publication_date': 'Publication Date'
+          'publication_date': 'Publication Date',
+          'details': 'Details'
         }
       };
       return translations[this.language][element];
