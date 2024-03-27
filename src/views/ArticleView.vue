@@ -37,16 +37,14 @@ export default {
   },
   methods: {
     async fetchArticle() {
-      await axios.get(`http://localhost:8000/article/${this.guid}?lang=${this.language}`)
-      .then((response)=>{
-        const data = response.data;
-        this.article = data;
+      try {
+        const response = await axios.get(`http://localhost:8000/article/${this.guid}?lang=${this.language}`);
+        this.article = response.data
         this.isLoading = false;
-      })
-      .catch((error)=>{
-        console.warn(error)
+      } catch (error) {
+        console.error(error);
         this.isLoading = false;
-      });
+      }
     },
     translateLanguage(element) {
       const translations = {

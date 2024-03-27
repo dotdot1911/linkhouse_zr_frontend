@@ -49,17 +49,15 @@ export default {
   },
   methods: {
     async fetchArticles() {
-      await axios.get(`http://localhost:8000/articles?lang=${this.language}`)
-      .then((response)=>{
-        const data = response.data;
-        this.articles = data;
-        this.filteredArticles = data;
+      try {
+        const response = await axios.get(`http://localhost:8000/articles?lang=${this.language}`);
+        this.articles = response.data
+        this.filteredArticles = response.data;
         this.isLoading = false;
-      })
-      .catch((error)=>{
-        console.warn(error)
+      } catch (error) {
+        console.error(error);
         this.isLoading = false;
-      });
+      }
     },
     filterArticles() {
       this.filteredArticles = this.articles.filter(article => {
@@ -70,6 +68,9 @@ export default {
     },
     toggleLanguage() {
       this.language = this.language === 'pl' ? 'en' : 'pl';
+      this.articles = [];
+      this.filteredArticles = [];
+      this.isLoading = true;
       this.fetchArticles();
     },
     translateLanguage(element) {
